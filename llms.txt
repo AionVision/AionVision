@@ -1,0 +1,244 @@
+# Aionvision API & Python SDK
+
+> Aionvision is a Vision AI platform for image description, document processing, semantic search, agentic chat, and file management. The Python SDK (`aionvision` on PyPI, imported as `aion`) provides async and sync clients.
+
+## Authentication
+
+API key as Bearer token. Keys are prefixed `aion_` (e.g., `aion_AbCd1234...`).
+
+```python
+from aion import AionVision
+async with AionVision(api_key="aion_...") as client: ...
+
+# Or from environment (AIONVISION_API_KEY)
+async with AionVision.from_env() as client: ...
+
+# Sync
+from aion import SyncAionVision
+with SyncAionVision(api_key="aion_...") as client: ...
+```
+
+## Key Concepts
+
+- **Files/Images**: Upload images → automatic AI description, tags, metadata. `client.upload_one()`, `client.upload()`.
+- **Documents**: Upload PDF/DOCX/TXT/MD → text extraction + chunking. `client.documents.upload_one()`.
+- **Links**: Bookmarked URLs with auto OG metadata crawl. `client.links.create_and_wait()`.
+- **Chat**: Agentic chat sessions over your files. `client.chat_session()` → `session.send()`.
+- **Agents**: Direct agent access: `client.agent_search.images()`, `client.agent_search.documents()`, `client.agent_operations.synthesize()`.
+- **Folders**: Hierarchical file organization. `client.folders.create()`, `client.folders.move_files()`.
+- **Colors**: Extract dominant colors, search by color. `client.colors.extract()`, `client.colors.search()`.
+- **Pipelines**: Chain agent steps: `client.pipeline().search_images("query").organize("intent").run()`.
+
+## SDK Quick Reference
+
+### Client Init
+```python
+AionVision(api_key, base_url="https://api.aionvision.tech/api/v2", timeout=300.0, max_retries=3)
+```
+
+### Resource Accessors
+`client.uploads`, `client.chats`, `client.files`, `client.documents`, `client.links`, `client.folders`, `client.colors`, `client.batch`, `client.agent_search`, `client.agent_operations`, `client.settings`, `client.tenant`, `client.audit`, `client.cloud_storage`
+
+### High-Level Methods
+- `await client.upload_one(file) -> UploadResult` (image_id, description, tags, filename, description_status)
+- `await client.upload(files) -> BatchUploadResults` (list of UploadResult, has_failures, failed(), retryable()). **Directories only expand image files (JPEG, PNG, WebP, GIF)** — non-image files are silently skipped. Use `client.documents.upload()` for PDFs/DOCX.
+- `await client.files.list() -> FileList` (files: list[UserFile], total_count: int, has_more: bool)
+- `await client.documents.search(query) -> DocumentSearchResponse` (results: list[DocumentSearchResult], total_count: int). Each result has: document_filename, content, score (float), chunk_id, document_id.
+- `await client.chats.list_sessions() -> SessionList` (items: list[ChatSession], total: int, has_more: bool)
+- `client.chat_session() -> ChatSessionContext` (async context manager)
+- `await session.send(message) -> ChatResponse` (content, images)
+- `async for token in session.send_stream(message)` (streaming)
+- `await client.uploads.check_quota() -> QuotaInfo` (can_proceed: bool, available, monthly_limit, current_usage)
+- `await client.audit.list() -> AuditLogList` (entries, total_count, has_more) — requires ADMIN role
+- `client.pipeline() -> Pipeline` (fluent builder, call .run())
+
+### Common Patterns
+```python
+# Upload + describe
+result = await client.upload_one("photo.jpg")
+print(result.description, result.tags)
+
+# Batch upload with callbacks
+results = await client.upload("/photos", on_progress=..., on_file_complete=...)
+
+# Chat session
+async with client.chat_session() as session:
+    response = await session.send("Find damaged poles")
+    print(response.content)
+
+# Document upload
+doc = await client.documents.upload_one("report.pdf")
+chunks = await client.documents.get_chunks(doc.document_id)
+
+# Search
+imgs = await client.agent_search.images("damaged poles")
+docs = await client.agent_search.documents("safety procedures")
+
+# Pipeline
+result = await client.pipeline().search_images("query").synthesize("report").run()
+```
+
+## Result Types (Common Gotchas)
+
+Field names that are commonly guessed wrong:
+- `FileList.total_count` (not `.total`), `.files` (list[UserFile])
+- `DocumentList.total_count` (not `.total`), `.documents` (list[DocumentItem])
+- `SessionList.items` (not `.sessions`), `.total` (int)
+- `QuotaInfo.can_proceed` (not `.allowed`)
+- `DocumentQuotaCheck.can_proceed` (not `.allowed`)
+- `DocumentSearchResult.score` (not `.relevance_score`)
+- `BatchUploadResults` extends `list[UploadResult]` — iterate directly, no `.results` attribute. Use `.succeeded_count`, `.failed_count`, `.has_failures`, `.succeeded()`, `.failed()`
+- `ChatSessionDetail.session.title` — title is nested under `.session` (a ChatSession), not directly on the detail object
+- `UserFileDetails.full_descriptions` (plural, not `.full_description`). `UserFileDetails` is a separate dataclass, NOT a subclass of `UserFile`
+- `DocumentSearchResult.page_numbers` (plural list[int], not `.page_number`)
+- `UploadResult.description_status` is a `DescriptionStatus` enum (values: pending, queued, processing, completed, failed, skipped)
+
+## Constraints
+
+- Max 10,000 files per upload batch
+- Image formats: JPEG, PNG, WebP, GIF
+- Document formats: PDF, DOCX, TXT, MD
+- API key format: `aion_` prefix + 20+ alphanumeric characters
+- Sync client (SyncAionVision) is NOT thread-safe
+- Streaming chat only available with async client
+- Base URL must use HTTPS (except localhost for development)
+
+## Error Handling
+
+```python
+from aion.exceptions import (
+    AionvisionError,           # Base
+    AuthenticationError,        # 401
+    RateLimitError,             # 429, has retry_after
+    ValidationError,            # 400/422
+    QuotaExceededError,         # quota limit, has partial_results
+    ResourceNotFoundError,      # 404
+    AionvisionTimeoutError,     # timeout, has last_result
+    UploadError,                # upload failed, has session_id
+)
+```
+
+## Files in This Repository
+
+- `api/` — Human-readable REST API docs (one markdown file per resource)
+- `openapi.json` — Full OpenAPI 3.1 specification (210 paths, 295 schemas)
+- `sdk/python/aion/` — Python SDK type stubs (method signatures, types, docstrings)
+- `examples/` — Runnable example scripts for every feature
+- `CLAUDE.md` — Detailed reference for AI coding assistants
+
+## REST API Endpoints
+
+Base URL: `https://api.aionvision.tech/api/v2` · Auth: `Authorization: Bearer {aion_...}`
+
+### Uploads
+- `POST /user-files/upload/stream` — Stream upload (recommended)
+- `POST /user-files/upload/stream-batch` — Batch stream upload
+- `GET /uploads/quota-check` — Check quota
+- `GET /uploads/sessions/{id}/status` — Track session
+- `POST /user-files/upload/initiate` — Presigned URL (advanced)
+- `POST /uploads/batch-prepare` + `POST /uploads/batch-confirm` — Batch presigned flow
+
+### Files
+- `GET /user-files` — List files (filter: search, tags, date, folder, media_type)
+- `GET /user-files/{id}` — File details with variants
+- `PATCH /user-files/{id}` — Update title/tags
+- `DELETE /user-files/{id}` — Delete file
+- `POST /user-files/batch-delete` — Bulk delete (up to 100)
+- `POST /user-files/links` — Create bookmark with OG crawl
+
+### Documents
+- `POST /document-uploads/request-presigned-url` — Get presigned URL
+- `POST /document-uploads/confirm` — Confirm upload, trigger processing
+- `GET /document-uploads/{id}/status` — Poll processing
+- `GET /documents/{id}/chunks` — Get text chunks
+- `POST /documents/search` — Semantic search
+
+<!-- ### Videos (coming soon)
+- `POST /video-uploads/initiate` — Start chunked upload
+- `POST /video-uploads/chunks/confirm` — Confirm each chunk
+- `POST /video-uploads/complete` — Finalize and trigger AI analysis
+- `GET /video-uploads/progress/{id}` — Track progress
+- `POST /video-uploads/abort` — Cancel upload
+- `GET /videos/{id}/scenes` — List detected scenes
+-->
+
+### Chat
+- `POST /chat/sessions` — Create session
+- `POST /chat/sessions/{id}/messages` — Send message
+- `POST /chat/sessions/{id}/messages/stream` — Stream response (SSE)
+- `GET /chat/sessions/{id}` — Get history
+- `PUT /chat/sessions/{id}/images` — Update image context
+- `POST /chat/sessions/{id}/plans/{plan_id}/action` — Approve/cancel plan
+
+### Agents
+- `POST /agents/search/images` — AI image search
+- `POST /agents/search/documents` — AI document search
+- `POST /agents/synthesize` — Generate report
+- `POST /agents/analyze/documents` — Deep document analysis
+- `POST /agents/organize` — Auto-organize files
+- `POST /agents/pipeline` — Multi-step pipeline (DAG)
+
+### Folders
+- `GET /folders` — List all (flat)
+- `GET /folders/{id}` — Contents + breadcrumbs
+- `POST /folders` — Create
+- `PATCH /folders/{id}` — Rename
+- `POST /folders/{id}/move` — Move to new parent
+- `DELETE /folders/{id}` — Delete (?mode=move_to_parent|delete_all)
+- `POST /folders/move-files` — Move files into folder
+
+### Colors (automatic on upload)
+- `GET /colors/images/{id}` — Get color analysis (extracted automatically on upload)
+- `POST /colors/images/{id}/extract` — Re-extract with custom settings
+- `POST /colors/batch/extract` — Batch re-extraction with custom settings
+- `POST /colors/search` — Search by hex/name/family (Delta-E)
+- `GET /colors/families` — List color families
+
+### Datasets
+- `POST /datasets` — Create from batch
+- `GET /datasets` — List datasets
+- `GET /datasets/{id}` — Get details
+- `POST /datasets/{id}/export` — Export (csv|coco|yolo|pascal_voc)
+- `GET /datasets/statistics/summary` — Aggregate stats
+
+### Cloud Storage
+- `POST /cloud-storage/auth/{provider}` — Initiate OAuth
+- `POST /cloud-storage/auth/{provider}/callback` — Complete OAuth
+- `GET /cloud-storage/connections` — List connections
+- `DELETE /cloud-storage/connections/{id}` — Disconnect
+- `POST /cloud-storage/import` — Import from Drive
+- `POST /cloud-storage/export` — Export to Drive
+- `GET /cloud-storage/jobs/{id}` — Job status
+
+### API Keys
+- `POST /api-keys` — Create (ADMIN, session auth)
+- `GET /api-keys` — List
+- `GET /api-keys/{id}` — Get details
+- `PUT /api-keys/{id}` — Update name/metadata
+- `DELETE /api-keys/{id}` — Revoke
+
+### Settings
+- `GET /user/profile` — Get profile
+- `PATCH /user/profile` — Update profile
+- `POST /user/change-password` — Change password
+- `GET /user/sessions` — List active sessions
+- `GET /tenant/settings` — Tenant config + subscription
+- `PATCH /tenant/settings` — Update tenant (ADMIN)
+- `GET /tenant/limits` — Usage limits and quota
+- `GET /tenant/members` — List members
+- `POST /tenant/members/invite` — Invite member (OWNER)
+- `PATCH /tenant/members/{id}/role` — Change role (OWNER)
+- `POST /tenant/s3-config` — Configure custom S3
+- `GET /tenant/audit-logs` — Audit log (ADMIN)
+
+### Usage
+- `GET /usage/summary` — Aggregated stats
+- `GET /usage/details` — Individual usage events (paginated)
+- `GET /usage/by-period` — Time-series data (hour|day|month)
+- `GET /usage/top-endpoints` — Most-used endpoints
+- `POST /usage/check` — Pre-flight credit check
+- `GET /usage/breakdown` — Credit breakdown by level/operation
+- `GET /usage/plan` — Plan utilization and recommendations
+- `GET /usage/tokens/monthly` — Monthly token totals
+- `GET /usage/tokens/files` — Per-file token usage
+- `GET /usage/tokens/conversations` — Per-session token usage
