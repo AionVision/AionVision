@@ -109,8 +109,6 @@ class ChatResponse:
             session_id: Session this message belongs to
             content: Response text content
             token_count: Tokens used in response
-            provider: AI provider used
-            model: Model used
             processing_time_ms: Time to generate response
             images: Images found or referenced
             metadata: Additional response metadata
@@ -119,8 +117,6 @@ class ChatResponse:
     session_id: str
     content: str
     token_count: int = 0
-    provider: str = ''
-    model: str = ''
     processing_time_ms: int = 0
     images: Optional[list[ImageReference]] = None
     metadata: Optional[dict[str, Any]] = None

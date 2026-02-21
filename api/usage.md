@@ -146,8 +146,6 @@ Paginated list of individual usage events. Useful for audit trails and detailed 
       "method": "POST",
       "status_code": 200,
       "response_time_ms": 312,
-      "provider": "anthropic",
-      "model": "claude-sonnet-4-20250514",
       "error_code": null,
       "api_key_id": "key_xyz789"
     }
@@ -331,8 +329,6 @@ Per-file token usage for processed images. Query parameters: `?limit=50&offset=0
       "input_tokens": 1200,
       "output_tokens": 450,
       "total_tokens": 1650,
-      "provider": "anthropic",
-      "model": "claude-sonnet-4-20250514",
       "created_at": "2025-01-15T14:30:00Z"
     }
   ],

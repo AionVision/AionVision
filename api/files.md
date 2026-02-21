@@ -126,9 +126,8 @@ Get full file metadata including processing history and all variant URLs. Accept
     {
       "id": "770a0600-e29b-41d4-a716-446655440000",
       "description": "Image shows a concrete pillar with visible cracks...",
-      "confidence_score": 0.95,
-      "providers_used": ["provider_a"],
-      "verification_level": "standard",
+      "confidence_score": 0.92,
+      "processing_time_ms": 1850,
       "created_at": "2025-01-15T10:32:00Z"
     }
   ],

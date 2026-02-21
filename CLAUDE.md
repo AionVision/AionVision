@@ -344,12 +344,12 @@ See `sdk/python/aion/types/` for complete type definitions. Key types:
 
 - **UploadResult**: image_id, filename, description, tags, description_status, is_failed, description_error, thumbnail_url
 - **BatchUploadResults**: **extends `list[UploadResult]`** — iterate directly (`for r in results`), no `.results` attribute. Properties: has_failures (bool), succeeded_count (int), failed_count (int), pending_count (int). Methods: succeeded(), failed(), retryable(), pending(), raise_on_failures() -> self, summary() -> str
-- **ChatResponse**: message_id, session_id, content (str), token_count, provider, model, processing_time_ms, images (list[ImageReference] | None), metadata. Properties: resolved_content (str), references (ParsedReferences), result_refs (dict), as_collection() -> FileCollection
+- **ChatResponse**: message_id, session_id, content (str), token_count, processing_time_ms, images (list[ImageReference] | None), metadata. Properties: resolved_content (str), references (ParsedReferences), result_refs (dict), as_collection() -> FileCollection
 - **ChatToken**: type (TOKEN, COMPLETE, ERROR, STATUS, IMAGE_RESULTS, etc.), content, data
 - **FileList**: files (list[UserFile]), total_count (int — not `.total`), has_more (bool)
 - **UserFile**: id, title, filename, tags, upload_description, visible_text, created_at, content_created_at, size_bytes, has_full_description, thumbnail_url, medium_url, full_url, content_type, media_type, dimensions, format, variant_status, variant_count, blur_hash, description_status, description_error <!-- video fields coming soon: video_metadata, video_analysis_status, video_analysis_job_id, scene_count, has_audio_transcript, video_url -->
 - **UserFileDetails**: id, object_key, title, original_filename, tags, upload_description, visible_text, full_descriptions (list[FullDescription] — plural, not `.full_description`), processing_history (list[ProcessingHistory]), full_url, medium_url, thumbnail_url, original_url, dimensions, format, size_bytes, content_type, hash, description_generated_at, created_at, updated_at, content_created_at, upload_method, variant_status, variant_count, blur_hash, description_status
-- **FullDescription**: id, description, visible_text, confidence_score, providers_used, verification_level, processing_time_ms, created_at
+- **FullDescription**: id, description, visible_text, confidence_score, processing_time_ms, created_at
 - **SessionList**: items (list[ChatSession] — not `.sessions`), total (int), has_more (bool)
 - **ChatSession**: id, title, total_messages, total_tokens, remaining_tokens, remaining_messages, is_active, use_all_images, selected_image_count, created_at, updated_at, last_message_at, last_message_preview, last_user_message
 - **ChatSessionDetail**: session (ChatSession — title is nested: `detail.session.title`), messages (list[ChatMessage]), selected_image_ids, current_search_result_ids

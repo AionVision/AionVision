@@ -8,15 +8,13 @@ from typing import Any, Optional
 class FullDescription:
     """
 
-        Detailed description from VLM providers.
+        Detailed AI-generated description for a file.
 
         Attributes:
             id: Unique identifier for the description
             description: Full AI-generated description text
             visible_text: OCR-extracted text from the image
             confidence_score: AI confidence score (0-1)
-            providers_used: List of VLM providers used
-            verification_level: Verification level used (quick/standard/thorough/critical)
             processing_time_ms: Time taken to generate description
             created_at: When the description was created
     """
@@ -24,8 +22,6 @@ class FullDescription:
     description: str
     visible_text: Optional[str] = None
     confidence_score: Optional[float] = None
-    providers_used: Optional[list[str]] = None
-    verification_level: Optional[str] = None
     processing_time_ms: Optional[int] = None
     created_at: Optional[datetime] = None
 

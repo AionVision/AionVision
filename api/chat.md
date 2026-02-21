@@ -87,8 +87,6 @@ async with AionVision(api_key="aion_...") as client:
   "message_id": "550e8400-e29b-41d4-a716-446655440000",
   "content": "Based on my analysis of the images, I can see...",
   "token_count": 450,
-  "provider": "anthropic",
-  "model": "claude-sonnet-4-20250514",
   "processing_time_ms": 2500,
   "remaining_tokens": 94550,
   "remaining_messages": 97
@@ -201,8 +199,6 @@ async with client.chat_session() as session:
       "role": "assistant",
       "content": "I can see corrosion on...",
       "token_count": 450,
-      "provider": "anthropic",
-      "model": "claude-sonnet-4-20250514",
       "processing_time_ms": 1250,
       "image_context": [
         {
