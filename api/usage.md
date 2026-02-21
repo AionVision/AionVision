@@ -141,8 +141,8 @@ Paginated list of individual usage events. Useful for audit trails and detailed 
     {
       "id": "evt_abc123",
       "timestamp": "2025-01-15T14:30:00Z",
-      "operation_type": "describe",
-      "endpoint": "/api/v2/describe",
+      "operation_type": "upload",
+      "endpoint": "/api/v2/user-files/upload/confirm",
       "method": "POST",
       "status_code": 200,
       "response_time_ms": 312,
