@@ -91,6 +91,9 @@ class QuotaInfo:
             monthly_limit: Total monthly limit
             current_usage: Current month's usage
             message: Optional message about quota status
+            max_batch_size: Maximum files per batch upload
+            prepaid_credits: Prepaid credit balance
+            max_concurrent_uploads: Maximum concurrent uploads allowed
     """
     can_proceed: bool
     requested: int
@@ -98,6 +101,9 @@ class QuotaInfo:
     monthly_limit: int
     current_usage: int
     message: Optional[str] = None
+    max_batch_size: Optional[int] = None
+    prepaid_credits: int = 0
+    max_concurrent_uploads: Optional[int] = None
 
     @classmethod
     def from_api_response(cls, data: dict[str, Any]) -> QuotaInfo:

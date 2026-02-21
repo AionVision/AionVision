@@ -20683,97 +20683,6 @@
             "type": "integer",
             "title": "Month"
           },
-          "describe_input_tokens": {
-            "type": "integer",
-            "title": "Describe Input Tokens"
-          },
-          "describe_output_tokens": {
-            "type": "integer",
-            "title": "Describe Output Tokens"
-          },
-          "describe_operations": {
-            "type": "integer",
-            "title": "Describe Operations"
-          },
-          "chat_input_tokens": {
-            "type": "integer",
-            "title": "Chat Input Tokens"
-          },
-          "chat_output_tokens": {
-            "type": "integer",
-            "title": "Chat Output Tokens"
-          },
-          "chat_messages": {
-            "type": "integer",
-            "title": "Chat Messages"
-          },
-          "verify_input_tokens": {
-            "type": "integer",
-            "title": "Verify Input Tokens"
-          },
-          "verify_output_tokens": {
-            "type": "integer",
-            "title": "Verify Output Tokens"
-          },
-          "verify_operations": {
-            "type": "integer",
-            "title": "Verify Operations"
-          },
-          "describe_cache_read_tokens": {
-            "type": "integer",
-            "title": "Describe Cache Read Tokens",
-            "default": 0
-          },
-          "describe_cache_creation_tokens": {
-            "type": "integer",
-            "title": "Describe Cache Creation Tokens",
-            "default": 0
-          },
-          "chat_cache_read_tokens": {
-            "type": "integer",
-            "title": "Chat Cache Read Tokens",
-            "default": 0
-          },
-          "chat_cache_creation_tokens": {
-            "type": "integer",
-            "title": "Chat Cache Creation Tokens",
-            "default": 0
-          },
-          "verify_cache_read_tokens": {
-            "type": "integer",
-            "title": "Verify Cache Read Tokens",
-            "default": 0
-          },
-          "verify_cache_creation_tokens": {
-            "type": "integer",
-            "title": "Verify Cache Creation Tokens",
-            "default": 0
-          },
-          "agent_input_tokens": {
-            "type": "integer",
-            "title": "Agent Input Tokens",
-            "default": 0
-          },
-          "agent_output_tokens": {
-            "type": "integer",
-            "title": "Agent Output Tokens",
-            "default": 0
-          },
-          "agent_operations": {
-            "type": "integer",
-            "title": "Agent Operations",
-            "default": 0
-          },
-          "agent_cache_read_tokens": {
-            "type": "integer",
-            "title": "Agent Cache Read Tokens",
-            "default": 0
-          },
-          "agent_cache_creation_tokens": {
-            "type": "integer",
-            "title": "Agent Cache Creation Tokens",
-            "default": 0
-          },
           "total_input_tokens": {
             "type": "integer",
             "title": "Total Input Tokens"
@@ -20785,31 +20694,12 @@
           "total_tokens": {
             "type": "integer",
             "title": "Total Tokens"
-          },
-          "total_cache_read_tokens": {
-            "type": "integer",
-            "title": "Total Cache Read Tokens",
-            "default": 0
-          },
-          "total_cache_creation_tokens": {
-            "type": "integer",
-            "title": "Total Cache Creation Tokens",
-            "default": 0
           }
         },
         "type": "object",
         "required": [
           "year",
           "month",
-          "describe_input_tokens",
-          "describe_output_tokens",
-          "describe_operations",
-          "chat_input_tokens",
-          "chat_output_tokens",
-          "chat_messages",
-          "verify_input_tokens",
-          "verify_output_tokens",
-          "verify_operations",
           "total_input_tokens",
           "total_output_tokens",
           "total_tokens"

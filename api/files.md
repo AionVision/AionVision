@@ -43,7 +43,7 @@ Authorization: Bearer aion_your_api_key_here
 | search | string | Full-text search across descriptions and visible text |
 | search_mode | string | `"all"` (default), `"metadata"`, or `"visible_text"` |
 | tags | string | Comma-separated tag filter (e.g. `"safety,inspection"`) |
-| media_types | string | Comma-separated: `"image"`, `"document"`, `"link"` <!-- "video" coming soon --> |
+| media_types | string | Comma-separated: `"image"`, `"video"`, `"document"`, `"link"` |
 | folder_id | string | Filter by folder UUID |
 | has_description | boolean | Filter by description status |
 | ids | string | Comma-separated file UUIDs (max 500) |
@@ -86,7 +86,7 @@ Authorization: Bearer aion_your_api_key_here
 ```
 
 Additional fields by `media_type`:
-<!-- - `"video"`: `video_metadata`, `video_analysis_status`, `scene_count` (coming soon) -->
+- `"video"`: `video_metadata`, `video_analysis_status`, `scene_count`, `video_url`
 - `"document"`: `document_type`, `page_count`, `text_extraction_status`, `chunk_count`
 - `"link"`: `source_url`, `domain`, `og_metadata`, `favicon_url`, `crawl_status`
 
@@ -265,7 +265,9 @@ Save URLs for reference. Links are automatically crawled to extract Open Graph m
   "id": "550e8400-e29b-41d4-a716-446655440000",
   "source_url": "https://github.com/example/repo",
   "domain": "github.com",
+  "title": "My Favorite Repo",
   "crawl_status": "queued",
+  "is_duplicate": false,
   "created_at": "2025-01-15T10:30:00Z"
 }
 ```

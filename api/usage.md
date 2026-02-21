@@ -34,6 +34,12 @@ Monitor API usage, credit consumption, and plan utilization. Use the summary end
 | GET | /usage/tokens/files | Per-file token usage |
 | GET | /usage/tokens/conversations | Per-chat-session token usage |
 
+### Dashboard
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | /usage/dashboard-analytics | Activity overview with daily breakdown |
+
 ---
 
 ## GET /usage/summary — Usage Summary
@@ -236,6 +242,16 @@ Detailed credit usage for the current month, broken down by verification level a
     "batch_describe": 500,
     "batch_verify": 100
   },
+  "recent_operations": [
+    {
+      "timestamp": "2025-01-15T14:30:00Z",
+      "operation": "describe",
+      "verification_level": "standard",
+      "credits": 1,
+      "endpoint": "/api/v2/user-files/upload/stream",
+      "status_code": 200
+    }
+  ],
   "reset_date": "2025-02-01T00:00:00+00:00"
 }
 ```
@@ -290,7 +306,7 @@ Comprehensive plan details with projections and optimization recommendations. Ac
 
 ### GET /usage/tokens/monthly
 
-Monthly token totals broken down by operation (describe, chat, verify) including cache metrics.
+Monthly token totals. Use this to track overall consumption against your plan limit.
 
 **Query parameters**: `?year=2025&month=1`
 
@@ -299,20 +315,9 @@ Monthly token totals broken down by operation (describe, chat, verify) including
 {
   "year": 2025,
   "month": 1,
-  "describe_input_tokens": 125000,
-  "describe_output_tokens": 45000,
-  "describe_operations": 3500,
-  "chat_input_tokens": 85000,
-  "chat_output_tokens": 32000,
-  "chat_messages": 420,
-  "verify_input_tokens": 18000,
-  "verify_output_tokens": 6500,
-  "verify_operations": 120,
-  "total_input_tokens": 228000,
-  "total_output_tokens": 83500,
-  "total_tokens": 311500,
-  "total_cache_read_tokens": 85000,
-  "total_cache_creation_tokens": 22000
+  "total_input_tokens": 222000,
+  "total_output_tokens": 83000,
+  "total_tokens": 305000
 }
 ```
 
@@ -355,8 +360,50 @@ Per-chat-session token usage. Query parameters: `?limit=50&offset=0`
       "created_at": "2025-01-15T10:00:00Z"
     }
   ],
-  "total_count": 420
+  "total_count": 420,
+  "total_input_tokens": 85000,
+  "total_output_tokens": 32000
 }
+```
+
+---
+
+## GET /usage/dashboard-analytics — Dashboard Analytics
+
+Get a comprehensive activity overview for dashboards, with daily file uploads, chat messages, token usage, and performance metrics.
+
+**Query parameters**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| period | string | `week`, `month` (default), or `year` |
+
+**Response** `200 OK`
+```json
+{
+  "period": "month",
+  "start_date": "2025-01-01",
+  "end_date": "2025-01-31",
+  "daily_activity": [
+    {"date": "2025-01-01", "files_uploaded": 12, "chat_messages": 8},
+    {"date": "2025-01-02", "files_uploaded": 5, "chat_messages": 15}
+  ],
+  "total_chat_messages": 420,
+  "total_files_uploaded": 350,
+  "total_chat_sessions": 28,
+  "avg_processing_time_ms": 1250.5,
+  "success_rate": 98.5,
+  "processing_tokens": 125000,
+  "chat_tokens": 85000,
+  "total_tokens": 210000,
+  "current_month_chat_tokens": 85000,
+  "max_monthly_chat_tokens": 75000
+}
+```
+
+```bash
+curl "https://api.aionvision.tech/api/v2/usage/dashboard-analytics?period=week" \
+  -H "Authorization: Bearer aion_your_api_key_here"
 ```
 
 ---

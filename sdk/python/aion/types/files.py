@@ -85,8 +85,14 @@ class UserFile:
             blur_hash: BlurHash for blur-up placeholder effect
             description_status: Status of description generation
             description_error: Error message if description generation failed
-            content_type: MIME type (image/jpeg, application/pdf, etc.)
-            media_type: Computed type: 'image', 'document', or 'link'
+            content_type: MIME type (video/mp4, image/jpeg, etc.)
+            media_type: Computed type: 'image' or 'video'
+            video_metadata: Video-specific metadata (duration, resolution, codecs, etc.)
+            video_analysis_status: Video analysis job status
+            video_analysis_job_id: Video analysis job ID
+            scene_count: Number of scenes detected in video
+            has_audio_transcript: Whether audio transcript exists
+            video_url: URL to original playable video file (for videos only)
     """
     id: str
     size_bytes: int
@@ -110,13 +116,12 @@ class UserFile:
     description_error: Optional[str] = None
     content_type: Optional[str] = None
     media_type: Optional[str] = None
-    # Video fields (coming soon — uncomment when video features are enabled):
-    # video_metadata: Optional[dict[str, Any]] = None
-    # video_analysis_status: Optional[str] = None
-    # video_analysis_job_id: Optional[str] = None
-    # scene_count: Optional[int] = None
-    # has_audio_transcript: Optional[bool] = None
-    # video_url: Optional[str] = None
+    video_metadata: Optional[dict[str, Any]] = None
+    video_analysis_status: Optional[str] = None
+    video_analysis_job_id: Optional[str] = None
+    scene_count: Optional[int] = None
+    has_audio_transcript: Optional[bool] = None
+    video_url: Optional[str] = None
 
     @classmethod
     def from_api_response(cls, data: dict[str, Any]) -> UserFile:

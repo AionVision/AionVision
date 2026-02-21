@@ -19,6 +19,7 @@ User preferences, tenant configuration, team membership, custom S3 storage, and 
 | DELETE | /user/sessions/{session_id} | Revoke a session | Any |
 | POST | /user/revoke-all-sessions | Revoke all other sessions | Any |
 | POST | /user/set-initial-password | Set password for OAuth users | Any |
+| POST | /user/account/delete | Permanently delete account | Any (rate limited: 3/day) |
 
 ### Tenant Settings
 
@@ -122,6 +123,30 @@ Send the password directly as a JSON string body:
 ```json
 {"success": true, "auth_provider": "both"}
 ```
+
+### POST /user/account/delete
+
+Permanently delete the authenticated user's account. Deletes all owned tenants (cascading to API keys, members, etc.), cancels active Stripe subscriptions, and creates an audit record. Rate limited: 3 attempts per day.
+
+**Request body**
+```json
+{
+  "confirmation": "delete my account"
+}
+```
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| confirmation | string | Must be exactly `"delete my account"` |
+
+**Response** `200 OK`
+```json
+{"message": "Account deleted successfully"}
+```
+
+**Errors**
+- `400` — Confirmation text doesn't match
+- `404` — User not found
 
 ---
 

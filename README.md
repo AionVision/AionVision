@@ -295,15 +295,13 @@ for r in results: ...       # iterate directly
 | `description_status` | `str \| None` | AI description generation status |
 | `description_error` | `str \| None` | Error message if description failed |
 | `content_type` | `str \| None` | MIME type (image/jpeg, application/pdf, etc.) |
-| `media_type` | `str \| None` | Computed type: `"image"`, `"document"`, or `"link"` |
-<!-- VIDEO FIELDS (coming soon):
+| `media_type` | `str \| None` | Computed type: `"image"`, `"video"`, `"document"`, or `"link"` |
 | `video_metadata` | `dict \| None` | Video-specific metadata (duration, resolution, codecs) |
 | `video_analysis_status` | `str \| None` | Video analysis job status |
 | `video_analysis_job_id` | `str \| None` | Video analysis job ID |
 | `scene_count` | `int \| None` | Number of scenes detected in video |
 | `has_audio_transcript` | `bool \| None` | Whether audio transcript exists |
 | `video_url` | `str \| None` | URL to original playable video (videos only) |
--->
 
 **`UserFileDetails`** (from `client.files.get()`):
 
@@ -406,8 +404,6 @@ Title and other session fields are nested: access via `detail.session.title`, no
 | `session_id` | `str` | Session this message belongs to |
 | `content` | `str` | Response text |
 | `token_count` | `int` | Tokens used in response |
-| `provider` | `str` | AI provider used |
-| `model` | `str` | Model used |
 | `processing_time_ms` | `int` | Time to generate response in ms |
 | `images` | `list[ImageReference] \| None` | Referenced images |
 | `metadata` | `dict \| None` | Additional response metadata (contains `result_refs`, etc.) |
@@ -482,6 +478,8 @@ Title and other session fields are nested: access via `detail.session.title`, no
 | `current_usage` | `int` | Current month's usage |
 | `message` | `str \| None` | Optional message about quota status |
 | `max_batch_size` | `int \| None` | Maximum batch size allowed |
+| `prepaid_credits` | `int` | Prepaid credit balance |
+| `max_concurrent_uploads` | `int \| None` | Maximum concurrent uploads allowed |
 
 **`DocumentQuotaCheck`** (from `client.documents.quota_check()`):
 | Field | Type | Description |

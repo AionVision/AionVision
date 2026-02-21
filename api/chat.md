@@ -70,6 +70,48 @@ async with AionVision(api_key="aion_...") as client:
 
 ---
 
+## GET /chat/sessions — List Sessions
+
+Paginated list of the user's chat sessions. Optionally filter by status or search by title/message content.
+
+**Query parameters**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| is_active | boolean | Filter by active status |
+| search | string | Search by title or message content (max 200 chars) |
+| limit | integer | Number of sessions to return (1–100, default 20) |
+| offset | integer | Number of sessions to skip (default 0) |
+| min_messages | integer | Only return sessions with at least this many messages |
+
+**Response** `200 OK`
+```json
+{
+  "sessions": [
+    {
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "title": "Equipment Analysis",
+      "total_messages": 12,
+      "total_tokens": 8500,
+      "remaining_tokens": 91500,
+      "remaining_messages": 88,
+      "is_active": true,
+      "use_all_images": true,
+      "selected_image_count": 0,
+      "created_at": "2025-01-15T10:30:00Z",
+      "updated_at": "2025-01-15T14:00:00Z",
+      "last_message_at": "2025-01-15T14:00:00Z",
+      "last_message_preview": "Based on the analysis...",
+      "last_user_message": "What damage do you see?"
+    }
+  ],
+  "total": 5,
+  "has_more": false
+}
+```
+
+---
+
 ## POST /chat/sessions/{id}/messages — Send Message (Non-Streaming)
 
 **Request body**
@@ -116,7 +158,7 @@ event: thinking
 data: {"type": "thinking", "status": "processing"}
 
 event: thinking_step
-data: {"type": "thinking_step", "phase": "analysis", "agent_name": "AnalysisAgent", "message": "Examining images..."}
+data: {"type": "thinking_step", "phase": "analysis", "agent_name": "AnalysisAgent", "message": "Examining images...", "reasoning": "Looking at corrosion patterns..."}
 
 event: status
 data: {"type": "status", "phase": "searching", "message": "Searching documents...", "agent_name": "SearchAgent"}
@@ -222,16 +264,37 @@ async with client.chat_session() as session:
 
 Update which images are available in chat context (max 1000).
 
+**Request body**
 ```json
 {"image_ids": ["550e8400-e29b-41d4-a716-446655440000", "660f9500-f39c-52e5-b827-557766550111"]}
+```
+
+**Response** `200 OK`
+```json
+{
+  "session_id": "550e8400-e29b-41d4-a716-446655440000",
+  "selected_image_ids": ["550e8400-e29b-41d4-a716-446655440000", "660f9500-f39c-52e5-b827-557766550111"],
+  "context_summary": "2 images selected",
+  "estimated_tokens": 2400
+}
 ```
 
 ### PUT /chat/sessions/{id}/documents
 
 Update which documents are available in chat context (max 100).
 
+**Request body**
 ```json
 {"document_ids": ["550e8400-e29b-41d4-a716-446655440000"]}
+```
+
+**Response** `200 OK`
+```json
+{
+  "session_id": "550e8400-e29b-41d4-a716-446655440000",
+  "selected_document_ids": ["550e8400-e29b-41d4-a716-446655440000"],
+  "document_count": 1
+}
 ```
 
 ### PATCH /chat/sessions/{id}/mode
