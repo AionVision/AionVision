@@ -1,6 +1,10 @@
 """
 Agentic Chat: Chat sessions, streaming, and follow-up conversations.
 
+Tip: If you only need to search images or documents without multi-turn
+conversation, use standalone search agents (client.agent_search) instead.
+They consume significantly fewer tokens. See semantic_search.py for examples.
+
 Demonstrates:
 - Creating chat sessions with context manager
 - Sending messages and getting responses

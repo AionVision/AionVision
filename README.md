@@ -113,7 +113,7 @@ AI-powered chat with your image and document library. The chat system uses speci
 See: [examples/agentic_chat.py](examples/agentic_chat.py)
 
 ### Semantic Search
-Search images and documents using natural language queries via AI agents.
+Search images and documents using natural language queries via AI agents. **Standalone search agents are the most token-efficient way to search** — use these directly instead of agentic chat when you don't need multi-turn conversation.
 - `client.agent_search.images("damaged poles")`
 - `client.agent_search.documents("safety procedures")`
 

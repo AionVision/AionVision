@@ -5,6 +5,8 @@
 
 Direct, stateless access to AI agents without requiring chat sessions. Each call executes a single operation and returns self-contained results — ideal for programmatic integrations, automated pipelines, and custom interfaces. The AI iteratively refines results until satisfactory, with usage tracking on every response.
 
+> **Tip:** Standalone search agents are the most token-efficient way to search your data. If you only need to find images or documents without multi-turn conversation, use these endpoints directly instead of [agentic chat](chat.md) to save on token usage.
+
 ## Endpoints
 
 | Method | Path | Description |

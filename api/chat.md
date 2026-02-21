@@ -5,6 +5,8 @@
 
 Create multi-turn AI chat sessions with access to your uploaded images and documents. The system uses specialized agents for search, analysis, document search, analytics, cross-referencing, and file organization. Both non-streaming and streaming (SSE) message endpoints are supported.
 
+> **Tip:** If you only need to search images or documents without multi-turn conversation, use the [Agents API](agents.md) directly (e.g., `POST /agents/search/images`). Standalone search agents consume significantly fewer tokens by skipping session overhead and conversational context.
+
 ## Endpoints
 
 | Method | Path | Description |

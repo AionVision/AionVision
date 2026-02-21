@@ -23,8 +23,8 @@ with SyncAionVision(api_key="aion_...") as client: ...
 - **Files/Images**: Upload images → automatic AI description, tags, metadata. `client.upload_one()`, `client.upload()`.
 - **Documents**: Upload PDF/DOCX/TXT/MD → text extraction + chunking. `client.documents.upload_one()`.
 - **Links**: Bookmarked URLs with auto OG metadata crawl. `client.links.create_and_wait()`.
-- **Chat**: Agentic chat sessions over your files. `client.chat_session()` → `session.send()`.
-- **Agents**: Direct agent access: `client.agent_search.images()`, `client.agent_search.documents()`, `client.agent_operations.synthesize()`.
+- **Chat**: Agentic chat sessions over your files. `client.chat_session()` → `session.send()`. Best for multi-turn conversations that need context across messages.
+- **Agents**: Direct agent access: `client.agent_search.images()`, `client.agent_search.documents()`, `client.agent_operations.synthesize()`. **Use standalone search agents instead of agentic chat when you only need to search** — they consume significantly fewer tokens by skipping session overhead and conversational context.
 - **Folders**: Hierarchical file organization. `client.folders.create()`, `client.folders.move_files()`.
 - **Colors**: Extract dominant colors, search by color. `client.colors.extract()`, `client.colors.search()`.
 - **Pipelines**: Chain agent steps: `client.pipeline().search_images("query").organize("intent").run()`.
@@ -163,6 +163,8 @@ Base URL: `https://api.aionvision.tech/api/v2` · Auth: `Authorization: Bearer {
 -->
 
 ### Chat
+> **Tip:** If you only need to search images or documents without multi-turn conversation, use the Agents endpoints below instead — they use significantly fewer tokens.
+
 - `POST /chat/sessions` — Create session
 - `POST /chat/sessions/{id}/messages` — Send message
 - `POST /chat/sessions/{id}/messages/stream` — Stream response (SSE)
@@ -171,6 +173,8 @@ Base URL: `https://api.aionvision.tech/api/v2` · Auth: `Authorization: Bearer {
 - `POST /chat/sessions/{id}/plans/{plan_id}/action` — Approve/cancel plan
 
 ### Agents
+> **Tip:** Standalone search agents are the most token-efficient way to search. Use these directly instead of agentic chat when you don't need multi-turn conversation.
+
 - `POST /agents/search/images` — AI image search
 - `POST /agents/search/documents` — AI document search
 - `POST /agents/synthesize` — Generate report

@@ -168,6 +168,8 @@ with SyncAionVision(api_key="aion_...") as client:
 
 ### client.agent_search (AgentSearchResource)
 
+> **Tip:** Use standalone search agents instead of agentic chat when you only need to search — they consume significantly fewer tokens by skipping session overhead and conversational context.
+
 | Method | Description |
 |--------|-------------|
 | `images(query, *, limit=50, folder_id, image_ids) -> ImageSearchAgentResult` | AI image search |

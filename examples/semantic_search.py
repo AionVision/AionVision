@@ -1,6 +1,10 @@
 """
 Semantic Search: Image and document search using AI agents.
 
+Tip: Standalone search agents (client.agent_search) are the most token-efficient
+way to search. Use these directly instead of agentic chat when you only need to
+find images or documents without multi-turn conversation.
+
 Demonstrates:
 - Image search with natural language queries
 - Document search across uploaded documents
